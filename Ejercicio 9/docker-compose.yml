@@ -1,0 +1,25 @@
+# Nombre fijo del proyecto: los contenedores quedan como ejercicio-09-<servicio>-1
+# y la red como ejercicio-09_ecommerce-network
+name: ejercicio-09
+
+services:
+  inventory-service:
+    build: ./InventoryService
+    networks:
+      - ecommerce-network
+
+  orders-service:
+    build: ./OrdersService
+    depends_on:
+      - inventory-service
+    environment:
+      # Nombre lógico del servicio, no una IP
+      INVENTORY_URL: http://inventory-service:8080/api/inventory
+    ports:
+      - "8081:8080"   # solo para poder probar desde el host
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge

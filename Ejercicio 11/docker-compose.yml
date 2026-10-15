@@ -1,0 +1,26 @@
+# Mismos servicios que el ejercicio 9 (se reutiliza su código),
+# pero con tres réplicas de inventory-service detrás del mismo nombre.
+name: ejercicio-11
+
+services:
+  inventory-service:
+    build: "../Ejercicio 9/InventoryService"
+    deploy:
+      replicas: 3
+    networks:
+      - ecommerce-network
+
+  orders-service:
+    build: "../Ejercicio 9/OrdersService"
+    depends_on:
+      - inventory-service
+    environment:
+      INVENTORY_URL: http://inventory-service:8080/api/inventory
+    ports:
+      - "8082:8080"   # distinto del ejercicio 9 para que no choquen
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
