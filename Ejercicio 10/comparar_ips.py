@@ -30,7 +30,7 @@ def probar():
     for _ in range(15):  # esperar a que el servicio arranque
         try:
             with urllib.request.urlopen(URL, timeout=3) as r:
-                return json.loads(r.read())["respondio_ip"]
+                return json.loads(r.read())["respondioIp"]
         except OSError:
             time.sleep(1)
     return "sin respuesta"

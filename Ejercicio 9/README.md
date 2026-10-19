@@ -2,16 +2,19 @@
 
 | Servicio | Qué hace |
 |---|---|
-| `InventoryService` | Responde `GET /api/inventory`. Cada respuesta incluye el **hostname e IP de la instancia** que atendió. |
+| `InventoryService` | Responde `GET /api/inventory` y `GET /api/inventory/{productId}`. Cada respuesta incluye el **hostname e IP de la instancia** que atendió. |
 | `OrdersService` | Llama a `http://inventory-service:8080/api/inventory` (nombre lógico, **ninguna IP en el código**). |
 
-Ambos están hechos en Python con solo la biblioteca estándar, así que no hay dependencias que instalar.
+Ambos son Web APIs en C# (ASP.NET Core, .NET 8). Cada uno tiene su `Dockerfile` *multi-stage* (el mismo del [ejercicio 8](../Ejercicio%208)), así que alcanza con Docker: no hace falta tener .NET instalado.
+
+Esta versión amplía la de los ejercicios 6 y 7 con lo necesario para observar la resolución y el balanceo (ejercicios 10 y 11). `OrdersService` abre una conexión nueva en cada llamada (`ConnectionClose = true`), así cada pedido vuelve a resolver el nombre en el DNS de Docker.
 
 Endpoints de `OrdersService`, publicados en el host como `http://localhost:8081`:
 
 | Endpoint | Para qué sirve |
 |---|---|
 | `/api/orders` | Consulta inventario e indica qué instancia respondió |
+| `/api/orders/P001` | La llamada del enunciado: `http://inventory-service:8080/api/inventory/P001` |
 | `/debug/resolve` | Muestra a qué IP(s) resuelve hoy el nombre `inventory-service` |
 | `/debug/balanceo?n=30` | Hace *n* llamadas y cuenta cuántas atendió cada instancia |
 
